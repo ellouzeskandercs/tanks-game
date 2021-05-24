@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import Phaser from 'phaser';
-import background from './assets/background.png';
 
 export class Welcome extends Component {
     componentDidMount() {
-        const image = new Image('./assets/background.png');
         let player, cursors;
         var config = {
             type: Phaser.AUTO,
@@ -34,26 +32,6 @@ export class Welcome extends Component {
         }
         
         function create() {
-            // this.anims.create({
-            //     key: 'left',
-            //     frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-            //     frameRate: 10,
-            //     repeat: -1
-            // });
-
-            // this.anims.create({
-            //     key: 'turn',
-            //     frames: [ { key: 'dude', frame: 4 } ],
-            //     frameRate: 20
-            // });
-
-            // this.anims.create({
-            //     key: 'right',
-            //     frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-            //     frameRate: 10,
-            //     repeat: -1
-            // });
-
             this.add.image(400, 250, 'background');
 
             cursors = this.input.keyboard.createCursorKeys();
@@ -71,7 +49,6 @@ export class Welcome extends Component {
         function update() {
             if (cursors.up.isDown)
             {
-                console.log('up')
                 player.body.velocity.copy(this.physics.velocityFromAngle(player.angle, 160))
             }
             else if (cursors.down.isDown)
