@@ -1,16 +1,13 @@
 import Phaser from 'phaser';
+import { Angle, ANGLE_UNIT } from './angle'
 
 export class Tank {
-    public static fromDegToRadian(angle: number): number {
-        /* To move to a physics/maths helpers */
-        return angle * Math.PI / 180; 
-    }
-
     private _containerObject: Phaser.GameObjects.Container;
     private _vehicleObject: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     private _cannonObject: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     private _scene: Phaser.Scene;
     private _velocity: number = 160;
+    private _angularVelocity: number = 80;
 
     constructor(scene: Phaser.Scene, x: number = 0, y:number = 0, obstacles: Phaser.Physics.Arcade.StaticGroup) {
         this._scene = scene;
@@ -42,13 +39,17 @@ export class Tank {
         this._cannonObject.rotation = Phaser.Math.Angle.Between(this._containerObject.x, this._containerObject.y, x, y);
     }
 
-    public moveToDirection(directionAngle: number) {
-        if (Math.sin(Tank.fromDegToRadian(this._vehicleObject.angle - directionAngle))**2 < 0.01 && Math.cos(Tank.fromDegToRadian(this._vehicleObject.angle - directionAngle)) > 0.9) {
+    public moveToDirection(directionAngle: Angle) {
+        const vehiculeAngle: Angle = new Angle(this._vehicleObject.angle, ANGLE_UNIT.DEGREES);
+        const angleDiff: Angle = Angle.sum(vehiculeAngle, Angle.multiply(directionAngle, -1))
+        console.log('anglediff',vehiculeAngle, Angle.multiply(directionAngle, -1), angleDiff, angleDiff.sin(), angleDiff.cos());
+        if (angleDiff.sin()**2 < 0.01 && angleDiff.cos()**2 > 0.81) {
             this._vehicleObject.body.setAngularVelocity(0);
-            (this._containerObject.body as Phaser.Physics.Arcade.Body).setVelocity(
-                Math.cos(Tank.fromDegToRadian(directionAngle)) * this._velocity, Math.sin(Tank.fromDegToRadian(directionAngle)) * this._velocity);
+            // console.log(directionAngle.cos());
+            // console.log(directionAngle.sin());
+            (this._containerObject.body as Phaser.Physics.Arcade.Body).setVelocity(directionAngle.cos() * this._velocity, directionAngle.sin() * this._velocity);
         } else {
-            this._vehicleObject.body.setAngularVelocity(Math.sin(Tank.fromDegToRadian(directionAngle - this._vehicleObject.angle)) > 0 ? 80 : -80);
+            this._vehicleObject.body.setAngularVelocity(angleDiff.sin() * angleDiff.cos() < 0 ? this._angularVelocity : -this._angularVelocity);
             (this._containerObject.body as Phaser.Physics.Arcade.Body).setVelocity(0, 0);
         }        
     }

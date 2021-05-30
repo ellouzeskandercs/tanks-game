@@ -3,8 +3,9 @@ import Phaser from 'phaser';
 import { assetImage, preloadImages } from './constants';
 import { Tank } from './tank';
 import _ from 'lodash';
+import { Angle, ANGLE_UNIT } from './angle'
 
-function getDirectionAngle([top, right, bottom, left]: boolean[]){
+function getDirectionAngle([top, right, bottom, left]: boolean[]): Angle{
     enum DIRECTIONS {
         TOP = -90,
         TOPRIGHT = -45,
@@ -15,22 +16,23 @@ function getDirectionAngle([top, right, bottom, left]: boolean[]){
         LEFT = 180,
         TOPLEFT = -135,
     }
-    if(_.isEqual([top, right, bottom, left], [true,false,false,false])) { return DIRECTIONS.TOP; } 
-    if(_.isEqual([top, right, bottom, left], [true,true,false,false])) { return DIRECTIONS.TOPRIGHT; } 
-    if(_.isEqual([top, right, bottom, left], [false,true,false,false])) { return DIRECTIONS.RIGHT; } 
-    if(_.isEqual([top, right, bottom, left], [false,true,true,false])) { return DIRECTIONS.BOTTOMRIGHT; } 
-    if(_.isEqual([top, right, bottom, left], [false,false,true,false])) { return DIRECTIONS.BOTTOM; } 
-    if(_.isEqual([top, right, bottom, left], [false,false,true,true])) { return DIRECTIONS.BOTTOMLEFT; } 
-    if(_.isEqual([top, right, bottom, left], [false,false,false,true])) { return DIRECTIONS.LEFT; } 
-    if(_.isEqual([top, right, bottom, left], [true,false,false,true])) { return DIRECTIONS.TOPLEFT; } 
+    if(_.isEqual([top, right, bottom, left], [true,false,false,false])) { return (new Angle(DIRECTIONS.TOP, ANGLE_UNIT.DEGREES)); } 
+    if(_.isEqual([top, right, bottom, left], [true,true,false,false])) { return (new Angle(DIRECTIONS.TOPRIGHT, ANGLE_UNIT.DEGREES)); } 
+    if(_.isEqual([top, right, bottom, left], [false,true,false,false])) { return (new Angle(DIRECTIONS.RIGHT, ANGLE_UNIT.DEGREES)); } 
+    if(_.isEqual([top, right, bottom, left], [false,true,true,false])) { return (new Angle(DIRECTIONS.BOTTOMRIGHT, ANGLE_UNIT.DEGREES)); } 
+    if(_.isEqual([top, right, bottom, left], [false,false,true,false])) { return (new Angle(DIRECTIONS.BOTTOM, ANGLE_UNIT.DEGREES)); } 
+    if(_.isEqual([top, right, bottom, left], [false,false,true,true])) { return (new Angle(DIRECTIONS.BOTTOMLEFT, ANGLE_UNIT.DEGREES)); } 
+    if(_.isEqual([top, right, bottom, left], [false,false,false,true])) { return (new Angle(DIRECTIONS.LEFT, ANGLE_UNIT.DEGREES)); } 
+    if(_.isEqual([top, right, bottom, left], [true,false,false,true])) { return (new Angle(DIRECTIONS.TOPLEFT, ANGLE_UNIT.DEGREES)); } 
+    throw new Error('Could not find the direction angle form input');
 }
 
 export class Welcome extends Component {
     componentDidMount() {
-        let player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
         let tank: Tank;
         let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-        var config = {
+
+        const config = {
             type: Phaser.AUTO,
             width: 800,
             height: 500,
@@ -43,12 +45,10 @@ export class Welcome extends Component {
             physics: {
                 default: 'arcade',
                 arcade: {
-                    // gravity: { y: 300 },
                     debug: false
                 }
             },
         };
-        let cannon: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
         var game = new Phaser.Game(config);
         
@@ -73,12 +73,12 @@ export class Welcome extends Component {
         
         function update(this: Phaser.Scene) {
             let cursorsDirections = [cursors.up.isDown, cursors.right.isDown, cursors.down.isDown, cursors.left.isDown];
-
             if(cursorsDirections[0] && cursorsDirections[2] || cursorsDirections[1] && cursorsDirections[3] || !cursorsDirections.reduce((a, b) => a || b, false)){
                 tank.stop();
             } else {
-                tank.moveToDirection(getDirectionAngle(cursorsDirections) as number)
+                tank.moveToDirection(getDirectionAngle(cursorsDirections))
             }
+
             let mousepointer = this.game.input.mousePointer;
             tank.pointCannonToPoint(mousepointer.x, mousepointer.y); 
         }
