@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { Welcome } from './game.js'
+import { Welcome } from './game/game.tsx'
 
 
 function App() {
