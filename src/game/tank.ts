@@ -66,7 +66,6 @@ export class Tank {
         const obstacleHitsCannon = obstacleRectangle.getBounds().reduce((acc:boolean, point: Point) => cannonRectangle.isPointInside(point) || acc, false);
         
         if(cannonHitsObstacle || obstacleHitsCannon || vehicleHitsObstacle || obstacleHitsVehicle){
-            console.log(object2.body)
             const pushDirection: Vector = {
                 x: this._containerObject.x - object2.body.center.x,
                 y: this._containerObject.y - object2.body.center.y
