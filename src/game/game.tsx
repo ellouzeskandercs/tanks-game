@@ -66,9 +66,8 @@ export class Welcome extends Component {
             obstacles.create(200, 150, 'obstacle');
             obstacles.create(550, 150, 'obstacle');
 
-            tank = new Tank(this, 25, 20, obstacles) 
-            // player.setCollideWorldBounds(true);
-            // this.physics.add.collider(tank, obstacles);
+            tank = new Tank(this, 25, 20);
+            tank.setObstacleCollider(obstacles);
         }
         
         function update(this: Phaser.Scene) {

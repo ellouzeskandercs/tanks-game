@@ -76,13 +76,16 @@ export class Rectangle {
             x: (point.x - this.rotation.origin.x),
             y: (point.y - this.rotation.origin.y),
         }   
-        const vectorAngle = (pointVector.y ? Math.atan(pointVector.x / pointVector.y) : (pointVector.x > 0 ? 0 : Math.PI));
+
+        const vectorAngle = (pointVector.x ? ( pointVector.x > 0 ? Math.atan( pointVector.y / pointVector.x): Math.PI + Math.atan( pointVector.y / pointVector.x) ): (pointVector.x > 0 ? 0 : Math.PI));
         const vectorLen = (Math.sqrt(pointVector.x ** 2 + pointVector.y **2));
+
         const newPointVector = {
             x: vectorLen * Angle.sum(Angle.multiply(this.rotation.angle, -1), new Angle(vectorAngle, ANGLE_UNIT.RADIANS)).cos() + this.rotation.origin.x - this.position.x,
             y: vectorLen * Angle.sum(Angle.multiply(this.rotation.angle, -1), new Angle(vectorAngle, ANGLE_UNIT.RADIANS)).sin() + this.rotation.origin.y - this.position.y
         }
-        return(newPointVector.x < this.width && newPointVector.y < this.height);
+
+        return(newPointVector.x < this.width && newPointVector.y < this.height && newPointVector.x > 0 && newPointVector.y > 0);
     } 
 }
 
