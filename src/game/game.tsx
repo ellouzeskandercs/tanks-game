@@ -4,6 +4,7 @@ import { assetImage, preloadImages } from './constants';
 import { Tank } from './tank';
 import _ from 'lodash';
 import { Angle, ANGLE_UNIT } from './angle'
+import { Bullet } from './bullet';
 
 function getDirectionAngle([top, right, bottom, left]: boolean[]): Angle{
     enum DIRECTIONS {
@@ -31,6 +32,7 @@ export class Welcome extends Component {
     componentDidMount() {
         let tank: Tank;
         let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+        let obstacles: Phaser.GameObjects.Group
 
         const config = {
             type: Phaser.AUTO,
@@ -61,7 +63,7 @@ export class Welcome extends Component {
 
             cursors = this.input.keyboard.createCursorKeys();
 
-            let obstacles = this.physics.add.staticGroup();
+            obstacles = this.physics.add.staticGroup();
             obstacles.create(400, 350, 'obstacle');
             obstacles.create(200, 150, 'obstacle');
             obstacles.create(550, 150, 'obstacle');
@@ -71,15 +73,23 @@ export class Welcome extends Component {
         }
         
         function update(this: Phaser.Scene) {
-            let cursorsDirections = [cursors.up.isDown, cursors.right.isDown, cursors.down.isDown, cursors.left.isDown];
-            if(cursorsDirections[0] && cursorsDirections[2] || cursorsDirections[1] && cursorsDirections[3] || !cursorsDirections.reduce((a, b) => a || b, false)){
-                tank.stop();
-            } else {
-                tank.moveToDirection(getDirectionAngle(cursorsDirections))
+            if (!tank.destroyed) {
+                let cursorsDirections = [cursors.up.isDown, cursors.right.isDown, cursors.down.isDown, cursors.left.isDown];
+                if(cursorsDirections[0] && cursorsDirections[2] || cursorsDirections[1] && cursorsDirections[3] || !cursorsDirections.reduce((a, b) => a || b, false)){
+                    tank.stop();
+                } else {
+                    tank.moveToDirection(getDirectionAngle(cursorsDirections))
+                }
+                let mousePointer = this.game.input.mousePointer;
+                tank.pointCannonToPoint(mousePointer.x, mousePointer.y); 
+                if (mousePointer.leftButtonDown()) {
+                    const bullet: Bullet = tank.fire(mousePointer.x, mousePointer.y);
+                    bullet.setObstacleCollider(obstacles);
+                    setTimeout(() => {
+                        bullet.setColliderWithTank(tank);
+                    }, 1000);
+                }
             }
-
-            let mousepointer = this.game.input.mousePointer;
-            tank.pointCannonToPoint(mousepointer.x, mousepointer.y); 
         }
     }
 

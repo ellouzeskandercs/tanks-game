@@ -2,9 +2,10 @@ import Phaser from 'phaser';
 import { Angle, ANGLE_UNIT } from './angle'
 import { Rectangle } from './rectangle';
 import { Point, Vector } from './point';
+import { Bullet } from './bullet';
 
 export class Tank {
-    private static _getObjectTrigoCoordinates(point: Point): Point{
+    public static getObjectTrigoCoordinates(point: Point): Point{
         /* To do move this to other helper */
         return ({
             x: point.y,
@@ -12,6 +13,7 @@ export class Tank {
         })
     }
 
+    public destroyed: boolean = false;
     private _containerObject: Phaser.GameObjects.Container;
     private _vehicleObject: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     private _cannonObject: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
@@ -20,6 +22,7 @@ export class Tank {
     private _angularVelocity: number = 80;
 
     constructor(scene: Phaser.Scene, x: number = 0, y:number = 0) {
+        /* To do use point for x y coord */
         this._scene = scene;
 
         this._containerObject = this._scene.add.container(x, y);
@@ -40,25 +43,44 @@ export class Tank {
 
     private _getObjectAsRectangle(object: Phaser.Physics.Arcade.Sprite): Rectangle {
         const rotation = { 
-            origin: Tank._getObjectTrigoCoordinates({ 
+            origin: Tank.getObjectTrigoCoordinates({ 
                 x: object.body.x + object.originX * object.width,
                 y: object.body.y + object.originY * object.height
             }),
             angle: new Angle(- object.angle, ANGLE_UNIT.DEGREES)
         }
-        const rectangle = new Rectangle(Tank._getObjectTrigoCoordinates(object.body.position), object.body.width, object.body.height, rotation);
+        const rectangle = new Rectangle(Tank.getObjectTrigoCoordinates(object.body.position), object.body.width, object.body.height, rotation);
         return rectangle;
     }
 
-    public setObstacleCollider(object: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[] | Phaser.GameObjects.Group | Phaser.GameObjects.Group[]) {
-        this._scene.physics.add.overlap(this._containerObject, object, (object1, object2) => this.histTest(object1, object2))
+    public setBulletObjectCollider(object: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[] | Phaser.GameObjects.Group | Phaser.GameObjects.Group[]) {
+        this._scene.physics.add.overlap(this._containerObject, object, (object1, object2) => this.bulletHitTest(object1, object2))
     }
 
-    public histTest(object1: Phaser.Types.Physics.Arcade.GameObjectWithBody, object2: Phaser.Types.Physics.Arcade.GameObjectWithBody): void {
-
+    public bulletHitTest(object1: Phaser.Types.Physics.Arcade.GameObjectWithBody, object2: Phaser.Types.Physics.Arcade.GameObjectWithBody) {
         const cannonRectangle = this._getObjectAsRectangle(this._cannonObject);
         const vehicleRectangle = this._getObjectAsRectangle(this._vehicleObject);
-        const obstacleRectangle = new Rectangle(Tank._getObjectTrigoCoordinates(object2.body.position), object2.body.width, object2.body.height)
+        const bulletRectangle = new Rectangle(Tank.getObjectTrigoCoordinates(object2.body.position), object2.body.width, object2.body.height)
+
+        const cannonHitsObstacle = cannonRectangle.getBounds().reduce((acc:boolean, point: Point) => bulletRectangle.isPointInside(point) || acc, false);
+        const vehicleHitsObstacle = vehicleRectangle.getBounds().reduce((acc:boolean, point: Point) => bulletRectangle.isPointInside(point) || acc, false);
+        const obstacleHitsVehicle = bulletRectangle.getBounds().reduce((acc:boolean, point: Point) => vehicleRectangle.isPointInside(point) || acc, false);
+        const obstacleHitsCannon = bulletRectangle.getBounds().reduce((acc:boolean, point: Point) => cannonRectangle.isPointInside(point) || acc, false);
+        
+        console.log(cannonHitsObstacle, obstacleHitsCannon, vehicleHitsObstacle, obstacleHitsVehicle)
+        if(cannonHitsObstacle || obstacleHitsCannon || vehicleHitsObstacle || obstacleHitsVehicle){
+            this.destroy();
+        }
+    }
+
+    public setObstacleCollider(object: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[] | Phaser.GameObjects.Group | Phaser.GameObjects.Group[]) {
+        this._scene.physics.add.overlap(this._containerObject, object, (object1, object2) => this.colliderHitTest(object1, object2))
+    }
+
+    public colliderHitTest(object1: Phaser.Types.Physics.Arcade.GameObjectWithBody, object2: Phaser.Types.Physics.Arcade.GameObjectWithBody): void {
+        const cannonRectangle = this._getObjectAsRectangle(this._cannonObject);
+        const vehicleRectangle = this._getObjectAsRectangle(this._vehicleObject);
+        const obstacleRectangle = new Rectangle(Tank.getObjectTrigoCoordinates(object2.body.position), object2.body.width, object2.body.height)
 
         const cannonHitsObstacle = cannonRectangle.getBounds().reduce((acc:boolean, point: Point) => obstacleRectangle.isPointInside(point) || acc, false);
         const vehicleHitsObstacle = vehicleRectangle.getBounds().reduce((acc:boolean, point: Point) => obstacleRectangle.isPointInside(point) || acc, false);
@@ -70,7 +92,7 @@ export class Tank {
                 x: this._containerObject.x - object2.body.center.x,
                 y: this._containerObject.y - object2.body.center.y
             }
-            this.pushTank(pushDirection, 10);
+            this.pushTank(pushDirection, 3);
         }
     }
     
@@ -97,8 +119,27 @@ export class Tank {
         }        
     }
 
+    public fire(x: number, y: number): Bullet {
+        /* to do use the point class as input */
+        const cannonAngle = new Angle(Phaser.Math.Angle.Between(this._containerObject.x, this._containerObject.y, x, y), ANGLE_UNIT.RADIANS);
+        const bullet = new Bullet(
+            this._scene, 
+            (this._containerObject.body as Phaser.Physics.Arcade.Body).center as Point, 
+            250, 
+            cannonAngle)
+        return bullet;
+    }
+
     public stop() {
         this._vehicleObject.body.setAngularVelocity(0);
         (this._containerObject.body as Phaser.Physics.Arcade.Body).setVelocity(0, 0);
+    }
+
+    public destroy() {
+        console.log('destroyed')
+        this.destroyed = true;
+        this._vehicleObject.destroy()
+        this._cannonObject.destroy()
+        this._containerObject.destroy()
     }
 }
