@@ -87,7 +87,7 @@ export class Welcome extends Component {
                     bullet.setObstacleCollider(obstacles);
                     setTimeout(() => {
                         bullet.setColliderWithTank(tank);
-                    }, 1000);
+                    }, 500);
                 }
             }
         }

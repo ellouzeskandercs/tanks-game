@@ -67,7 +67,6 @@ export class Tank {
         const obstacleHitsVehicle = bulletRectangle.getBounds().reduce((acc:boolean, point: Point) => vehicleRectangle.isPointInside(point) || acc, false);
         const obstacleHitsCannon = bulletRectangle.getBounds().reduce((acc:boolean, point: Point) => cannonRectangle.isPointInside(point) || acc, false);
         
-        console.log(cannonHitsObstacle, obstacleHitsCannon, vehicleHitsObstacle, obstacleHitsVehicle)
         if(cannonHitsObstacle || obstacleHitsCannon || vehicleHitsObstacle || obstacleHitsVehicle){
             this.destroy();
         }
@@ -122,9 +121,13 @@ export class Tank {
     public fire(x: number, y: number): Bullet {
         /* to do use the point class as input */
         const cannonAngle = new Angle(Phaser.Math.Angle.Between(this._containerObject.x, this._containerObject.y, x, y), ANGLE_UNIT.RADIANS);
+        const bulletStartPoint: Point = {
+            x: (this._containerObject.body as Phaser.Physics.Arcade.Body).center.x + cannonAngle.cos() * this._cannonObject.body.width,
+            y: (this._containerObject.body as Phaser.Physics.Arcade.Body).center.y + cannonAngle.sin() * this._cannonObject.body.width
+        }
         const bullet = new Bullet(
             this._scene, 
-            (this._containerObject.body as Phaser.Physics.Arcade.Body).center as Point, 
+            bulletStartPoint, 
             250, 
             cannonAngle)
         return bullet;
@@ -136,7 +139,6 @@ export class Tank {
     }
 
     public destroy() {
-        console.log('destroyed')
         this.destroyed = true;
         this._vehicleObject.destroy()
         this._cannonObject.destroy()

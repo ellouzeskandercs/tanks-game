@@ -5,7 +5,7 @@ import { Rectangle } from './rectangle';
 import { Tank } from './tank';
 
 export class Bullet {
-    private static maxCollisionTimes: number = 2;
+    public static maxCollisionTimes: number = 2;
 
     private _scene: Phaser.Scene;
     private _collidedTimes: number = 0;

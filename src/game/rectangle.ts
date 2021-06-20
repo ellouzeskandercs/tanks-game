@@ -1,4 +1,3 @@
-import { intersectionBy } from 'lodash';
 import { Angle, ANGLE_UNIT } from './angle';
 import { Line } from './line';
 import { Point, Vector } from './point';
