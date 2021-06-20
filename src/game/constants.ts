@@ -33,4 +33,11 @@ const backgroundImage: assetImage = {
     height: 500
 }
 
-export const preloadImages: assetImage[] = [tankImage, obstacleImage, cannonImage, backgroundImage] 
+const bulletImage: assetImage = {
+    name: 'bullet',
+    path: 'assets/bullet.png',
+    width: 15,
+    height: 8
+}
+
+export const preloadImages: assetImage[] = [tankImage, obstacleImage, cannonImage, backgroundImage, bulletImage] 

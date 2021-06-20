@@ -1,4 +1,5 @@
 import { Angle, ANGLE_UNIT } from './angle';
+import { Line } from './line';
 import { Point, Vector } from './point';
 
 export class Rectangle {
@@ -87,6 +88,33 @@ export class Rectangle {
 
         return(newPointVector.x < this.width && newPointVector.y < this.height && newPointVector.x > 0 && newPointVector.y > 0);
     } 
+
+    public intersectWithLine(line: Line): any{
+        const pointVector = {
+            x: (line.point.x - this.rotation.origin.x),
+            y: (line.point.y - this.rotation.origin.y),
+        }   
+
+        const vectorAngle = (pointVector.x ? ( pointVector.x > 0 ? Math.atan( pointVector.y / pointVector.x): Math.PI + Math.atan( pointVector.y / pointVector.x) ): (pointVector.x > 0 ? 0 : Math.PI));
+        const vectorLen = (Math.sqrt(pointVector.x ** 2 + pointVector.y **2));
+
+        const newPointVector = {
+            x: vectorLen * Angle.sum(Angle.multiply(this.rotation.angle, -1), new Angle(vectorAngle, ANGLE_UNIT.RADIANS)).cos() + this.rotation.origin.x - this.position.x,
+            y: vectorLen * Angle.sum(Angle.multiply(this.rotation.angle, -1), new Angle(vectorAngle, ANGLE_UNIT.RADIANS)).sin() + this.rotation.origin.y - this.position.y
+        }
+
+        const slope = line.direction.y / line.direction.x; /* To do should also rotate the direction vector */
+        const yIntercept = newPointVector.y - slope * newPointVector.x;
+
+        const intersection = {
+            top: (this.height - yIntercept) / slope > 0 && (this.height - yIntercept) / slope < this.width,
+            right: slope * this.width + yIntercept > 0 && slope * this.width + yIntercept < this.height,
+            bottom:  -yIntercept / slope > 0 && -yIntercept/ slope < this.width,
+            left: yIntercept > 0 && yIntercept < this.height,
+        }
+
+        return(intersection)
+    }
 }
 
 export interface IRectangleRotation {
