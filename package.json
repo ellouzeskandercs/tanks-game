@@ -1,5 +1,6 @@
 {
   "name": "game-tanks",
+  "homepage": "https://ellouzeskandercs.github.io/tanks-game/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -22,7 +23,8 @@
   "scripts": {
     "prepare": "husky install",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build --path docs",
+    "deploy": "node deploy.ts",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
