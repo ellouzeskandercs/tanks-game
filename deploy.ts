@@ -1,17 +1,14 @@
 const { execSync } = require('child_process');
 
 try {
-    console.log('--- Checking ig the current branch is main ---');
+    console.log('--- Checking if the current branch is main ---');
     const branch = execSync('git symbolic-ref --short -q HEAD').toString().replace(/(\r\n|\n|\r)/gm,""); // remove line-breaks
-    console.log(branch.toString().replace(/(\r\n|\n|\r)/gm,""))
-    console.log(branch.toString(), 'main', branch.toString() === 'main')
     if (branch.toString() !== 'main'){
         throw new Error('Can\'t execute this script outside main branch. please switch and rerun this script')
     }
 
-    console.log('--- Checking if there is changed files ---')
+    console.log('--- Checking if there are any uncommited changes ---')
     const uncommitedChanges = execSync('git status --porcelain')
-    console.log('uncommitedChanges', uncommitedChanges.toString(), 'uncommitedChanges')
     if(uncommitedChanges.toString() !== ''){
         throw new Error('You have uncommited changes. please commit/stash changes before deploying')
     }
@@ -35,4 +32,3 @@ try {
 } catch(e) {
     console.warn('An error occured: ', e.toString())
 }
-
