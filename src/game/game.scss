@@ -1,0 +1,21 @@
+.game-container {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.game-commands {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 18px;
+}
+
+.game-command {
+    text-align: left;
+}    
+
+.command-icon {
+    margin-right: 18px;
+}

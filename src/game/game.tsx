@@ -1,10 +1,13 @@
-import React, { Component } from 'react';
+import './game.scss';
+import { Component } from 'react';
 import Phaser from 'phaser';
-import { assetImage, preloadImages } from './constants';
+import { preloadImages } from './constants';
 import { Tank } from './tank';
 import _ from 'lodash';
 import { Angle, ANGLE_UNIT } from './angle'
 import { Bullet } from './bullet';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowsAlt, faMouse, faMousePointer } from '@fortawesome/free-solid-svg-icons'
 
 function getDirectionAngle([top, right, bottom, left]: boolean[]): Angle{
     enum DIRECTIONS {
@@ -28,7 +31,7 @@ function getDirectionAngle([top, right, bottom, left]: boolean[]): Angle{
     throw new Error('Could not find the direction angle form input');
 }
 
-export class Welcome extends Component {
+export class Game extends Component {
     componentDidMount() {
         let tank: Tank;
         let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -38,7 +41,7 @@ export class Welcome extends Component {
             type: Phaser.AUTO,
             width: 800,
             height: 500,
-            parent: 'game-container',
+            parent: 'game-canvas',
             scene: {
                 preload: preload,
                 create: create,
@@ -95,9 +98,15 @@ export class Welcome extends Component {
 
     render() {
         return (
-            <div className="game">
-                <h1>Hi this is a game</h1>
-                <div className="game-container"> </div>
-            </div>);
+            <div className="game-container"> 
+                <div className="d-flex">
+                    <div id="game-canvas"></div>
+                    <div className="game-commands">
+                        <div className="game-command"> <FontAwesomeIcon icon={faArrowsAlt} className="fa-w-16 command-icon"/> Move Tank </div>
+                        <div className="game-command"> <FontAwesomeIcon icon={faMouse} className="fa-w-16 command-icon"/> Left click to shoot bullets </div>
+                        <div className="game-command"> <FontAwesomeIcon icon={faMousePointer} className="fa-w-16 command-icon"/> Move mouse to move the cannon </div>
+                    </div>
+                </div>
+            </div>)
     }
 }
