@@ -1,7 +1,7 @@
 import './game.scss';
-import React, { Component } from 'react';
+import { Component } from 'react';
 import Phaser from 'phaser';
-import { assetImage, preloadImages } from './constants';
+import { preloadImages } from './constants';
 import { Tank } from './tank';
 import _ from 'lodash';
 import { Angle, ANGLE_UNIT } from './angle'
