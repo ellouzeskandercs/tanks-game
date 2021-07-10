@@ -7,7 +7,7 @@ export interface assetImage {
 
 const tankImage: assetImage = {
     name: 'tank',
-    path: 'tanks-game/assets/tank.png',
+    path: '/tanks-game/assets/tank.png',
     width: 40,
     height: 30
 }
@@ -40,4 +40,12 @@ const bulletImage: assetImage = {
     height: 8
 }
 
-export const preloadImages: assetImage[] = [tankImage, obstacleImage, cannonImage, backgroundImage, bulletImage] 
+const initBackgroundImage: assetImage = {
+    name: 'init-background',
+    path: '/tanks-game/assets/init-background.png',
+    width: 800,
+    height: 500
+}
+
+export const initPreloadImages: Record<string, assetImage> = { initBackgroundImage } 
+export const gamePreloadImages: Record<string, assetImage> = { tankImage, obstacleImage, cannonImage, backgroundImage, bulletImage } 
