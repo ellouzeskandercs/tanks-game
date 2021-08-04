@@ -1,25 +1,25 @@
 {
   "files": {
     "main.css": "/tanks-game/static/css/main.35c25ee8.chunk.css",
-    "main.js": "/tanks-game/static/js/main.187a929c.chunk.js",
-    "main.js.map": "/tanks-game/static/js/main.187a929c.chunk.js.map",
+    "main.js": "/tanks-game/static/js/main.64063445.chunk.js",
+    "main.js.map": "/tanks-game/static/js/main.64063445.chunk.js.map",
     "runtime-main.js": "/tanks-game/static/js/runtime-main.fd881559.js",
     "runtime-main.js.map": "/tanks-game/static/js/runtime-main.fd881559.js.map",
     "static/css/2.7b1c032f.chunk.css": "/tanks-game/static/css/2.7b1c032f.chunk.css",
-    "static/js/2.53e10a93.chunk.js": "/tanks-game/static/js/2.53e10a93.chunk.js",
-    "static/js/2.53e10a93.chunk.js.map": "/tanks-game/static/js/2.53e10a93.chunk.js.map",
+    "static/js/2.a6855a26.chunk.js": "/tanks-game/static/js/2.a6855a26.chunk.js",
+    "static/js/2.a6855a26.chunk.js.map": "/tanks-game/static/js/2.a6855a26.chunk.js.map",
     "static/js/3.5a28d54d.chunk.js": "/tanks-game/static/js/3.5a28d54d.chunk.js",
     "static/js/3.5a28d54d.chunk.js.map": "/tanks-game/static/js/3.5a28d54d.chunk.js.map",
     "index.html": "/tanks-game/index.html",
     "static/css/2.7b1c032f.chunk.css.map": "/tanks-game/static/css/2.7b1c032f.chunk.css.map",
     "static/css/main.35c25ee8.chunk.css.map": "/tanks-game/static/css/main.35c25ee8.chunk.css.map",
-    "static/js/2.53e10a93.chunk.js.LICENSE.txt": "/tanks-game/static/js/2.53e10a93.chunk.js.LICENSE.txt"
+    "static/js/2.a6855a26.chunk.js.LICENSE.txt": "/tanks-game/static/js/2.a6855a26.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.fd881559.js",
     "static/css/2.7b1c032f.chunk.css",
-    "static/js/2.53e10a93.chunk.js",
+    "static/js/2.a6855a26.chunk.js",
     "static/css/main.35c25ee8.chunk.css",
-    "static/js/main.187a929c.chunk.js"
+    "static/js/main.64063445.chunk.js"
   ]
 }
